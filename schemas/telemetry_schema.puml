@@ -1,0 +1,21 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_LEFT_RIGHT()
+title C4 — Components: TelemetryService
+
+ContainerQueue(rabbit, "RabbitMQ", "AMQP", "Очередь: telemetry-service-queue\nСообщение: DeviceEvent (smarthome_core)")
+ContainerDb(pg, "PostgreSQL", "DB", "Таблица: DeviceTelemetry (DeviceTelemetryEntity)")
+
+Container_Boundary(ts, "TelemetryService (ASP.NET Core)") {
+
+  Component(consumer, "TelemetryEventConsumer", "MassTransit Consumer (IConsumer<DeviceEvent>)", "Логирует событие и сохраняет телеметрию")
+  Component(repo, "DbRepository", "ITelemetryRepository", "Сохраняет данные в БД через EF Core")
+  Component(db, "TelemetryDbContext", "EF Core DbContext",  "DbSet<DeviceTelemetryEntity> DeviceTelemetry")
+}
+
+Rel(rabbit, consumer, "DeviceEvent", "AMQP")
+Rel(consumer, repo, "SaveAsync(DeviceTelemetry)")
+Rel(repo, db, "Add + SaveChangesAsync", "EF Core")
+Rel(db, pg, "SQL")
+@enduml

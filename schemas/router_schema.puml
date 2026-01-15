@@ -1,0 +1,40 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_LEFT_RIGHT()
+title C4 — Components: Router
+
+System_Ext(device, "IoT-устройство", "MQTT client")
+ContainerQueue(rabbit, "RabbitMQ", "AMQP", "DeviceInfoEvent / DeviceEvent / CommandToDeviceEvent / LegacyDeviceEvent")
+
+Container_Boundary(router, "Router (.NET MQTT Gateway)") {
+
+  together {
+    Component(mqtt, "MqttBackgroundService", "BackgroundService", "Подключение к MQTT, прием сообщений от устройств")
+    Component(auth, "AuthorizedDevices", "In-memory cache",  "Кэш авторизованных устройств (deviceId)")
+  }
+
+  together {
+    Component(deviceInfo, "DeviceInfoEventConsumer", "MassTransit Consumer",  "Получает DeviceInfoEvent, обновляет AuthorizedDevices")
+    Component(command, "CommandToDeviceEventConsumer", "MassTransit Consumer",  "Получает CommandToDeviceEvent, публикует команду в MQTT")
+    Component(legacy, "LegacyDeviceEventConsumer", "MassTransit Consumer",  "Получает LegacyDeviceEvent")
+  }
+
+  Component(pub, "IPublishEndpoint", "MassTransit Publisher", "Публикует DeviceEvent в RabbitMQ")
+}
+
+Rel(device, mqtt, "Телеметрия", "MQTT")
+Rel(mqtt, auth, "Проверяет deviceId", "in-memory")
+Rel(mqtt, pub, "Публикует DeviceEvent")
+Rel(pub, rabbit, "DeviceEvent", "AMQP")
+
+Rel(rabbit, deviceInfo, "DeviceInfoEvent", "AMQP")
+Rel(deviceInfo, auth, "Upsert(deviceId)", "in-memory")
+
+Rel(rabbit, command, "CommandToDeviceEvent", "AMQP")
+Rel(command, mqtt, "Публикует команду в MQTT", "MQTT")
+
+Rel(rabbit, legacy, "LegacyDeviceEvent", "AMQP")
+Rel(legacy, pub, "Map LegacyDeviceEvent to DeviceEvent", "AMQP")
+
+@enduml

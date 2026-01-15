@@ -1,0 +1,110 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "FlowService | v1",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5020/"
+    }
+  ],
+  "paths": {
+    "/Flow": {
+      "post": {
+        "tags": [
+          "Flow"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFlowApiRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFlowApiRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFlowApiRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateFlowApiRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "triggerDeviceId": {
+            "type": "string"
+          },
+          "flowData": {
+            "$ref": "#/components/schemas/Flow"
+          }
+        }
+      },
+      "Flow": {
+        "type": "object",
+        "properties": {
+          "condition": {
+            "$ref": "#/components/schemas/FlowCondition"
+          },
+          "action": {
+            "$ref": "#/components/schemas/FlowAction"
+          }
+        }
+      },
+      "FlowAction": {
+        "type": "object",
+        "properties": {
+          "targetDeviceId": {
+            "type": "string"
+          },
+          "command": {
+            "type": "string"
+          }
+        }
+      },
+      "FlowCondition": {
+        "type": "object",
+        "properties": {
+          "property": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string"
+          },
+          "value": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Flow"
+    }
+  ]
+}

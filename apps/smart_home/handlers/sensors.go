@@ -53,15 +53,16 @@ func (h *SensorHandler) GetSensors(c *gin.Context) {
 	// Update temperature sensors with real-time data from the external API
 	for i, sensor := range sensors {
 		if sensor.Type == models.Temperature {
-			tempData, err := h.TemperatureService.GetTemperatureByID(fmt.Sprintf("%d", sensor.ID))
+			tempData, err := h.TemperatureService.GetTemperature(sensor.Location)
 			if err == nil {
+				h.TemperatureService.SendToIntegrationAPI(sensor.Name, fmt.Sprintf("%.2f", tempData.Value))
 				// Update sensor with real-time data
 				sensors[i].Value = tempData.Value
 				sensors[i].Status = tempData.Status
 				sensors[i].LastUpdated = tempData.Timestamp
 				log.Printf("Updated temperature data for sensor %d from external API", sensor.ID)
 			} else {
-				log.Printf("Failed to fetch temperature data for sensor %d: %v", sensor.ID, err)
+				log.Printf("Failed to fetch temperatureeee data for sensor %d: %v", sensor.ID, err)
 			}
 		}
 	}
@@ -93,7 +94,7 @@ func (h *SensorHandler) GetSensorByID(c *gin.Context) {
 			sensor.LastUpdated = tempData.Timestamp
 			log.Printf("Updated temperature data for sensor %d from external API", sensor.ID)
 		} else {
-			log.Printf("Failed to fetch temperature data for sensor %d: %v", sensor.ID, err)
+			log.Printf("Failed to fetch temperaturexxxxx data for sensor %d: %v", sensor.ID, err)
 		}
 	}
 
@@ -112,7 +113,7 @@ func (h *SensorHandler) GetTemperatureByLocation(c *gin.Context) {
 	tempData, err := h.TemperatureService.GetTemperature(location)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": fmt.Sprintf("Failed to fetch temperature data: %v", err),
+			"error": fmt.Sprintf("Failed to fetch temperaturddddd data: %v", err),
 		})
 		return
 	}

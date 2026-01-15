@@ -1,0 +1,48 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_LEFT_RIGHT()
+title C4 — Containers: SmartHome IoT Platform (ровнее)
+
+Person(admin, "Администратор", "Регистрирует устройства и настраивает сценарии")
+System_Ext(device, "IoT-устройство", "Телеметрия и команды по MQTT")
+System_Ext(legacy, "Старая монолитная система", "Пишет события через REST API")
+
+System_Boundary(iot, "SmartHome IoT Platform") {
+  together {
+    Container(devReg, "DeviceRegistry", "ASP.NET Core REST API", "Регистрация устройств, публикация события регистрации")
+    Container(legacyApi, "LegacyIntegrationApi", "ASP.NET Core REST API", "REST интеграция со старой системой (публикует события)")
+    Container(router, "Router", ".NET service (MQTT gateway)", "MQTT-шлюз, кэш авторизованных устройств, маршрутизация")
+  }
+
+  ContainerQueue(rabbit, "RabbitMQ", "AMQP", "События: регистрация, телеметрия, команды, legacy")
+
+  together {
+    Container(flow, "FlowService", "ASP.NET Core REST API + consumer", "CRUD сценариев и выполнение сценариев")
+    Container(telemetry, "TelemetryService", ".NET background consumer", "Сохранение телеметрии")
+  }
+
+  ContainerDb(pg, "PostgreSQL", "DB", "Устройства, сценарии, телеметрия")
+}
+
+Rel(admin, devReg, "Регистрирует устройства", "HTTPS")
+Rel(admin, flow, "CRUD сценариев", "HTTPS")
+Rel(legacy, legacyApi, "Пишет legacy-события", "HTTPS")
+
+Rel(device, router, "Телеметрия / принимает команды", "MQTT")
+
+Rel(devReg, pg, "Сохраняет устройство", "SQL")
+Rel(flow, pg, "Хранит/читает сценарии", "SQL")
+Rel(telemetry, pg, "Пишет телеметрию", "SQL")
+
+Rel(devReg, rabbit, "DeviceRegistered/DeviceInfo", "AMQP")
+Rel(legacyApi, rabbit, "LegacyDeviceEvent", "AMQP")
+
+Rel(rabbit, router, "Регистрация/команды/legacy", "AMQP")
+Rel(router, rabbit, "DeviceEvent (телеметрия)", "AMQP")
+
+Rel(rabbit, flow, "DeviceEvent", "AMQP")
+Rel(flow, rabbit, "CommandToDevice", "AMQP")
+Rel(rabbit, telemetry, "DeviceEvent", "AMQP")
+
+@enduml

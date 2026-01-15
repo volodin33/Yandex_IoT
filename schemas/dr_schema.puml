@@ -1,0 +1,47 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_LEFT_RIGHT()
+title C4 — Components: DeviceRegistry
+
+Person(admin, "Администратор", "Делает запросы к API")
+
+ContainerDb(pg, "PostgreSQL", "DB", "Devices (таблица устройств)")
+ContainerQueue(rabbit, "RabbitMQ", "AMQP", "DeviceInfoEvent (MassTransit publish)")
+
+Container_Boundary(dr, "DeviceRegistry (ASP.NET Core)") {
+
+  together {
+    Component(auth, "AuthorizeFilter", "IActionFilter", "Берёт user-id из заголовка, иначе 401")
+    Component(user, "CurrentUser", "Scoped object", "Хранит CurrentUser.Id")
+  }
+
+  Component(ctrl, "DeviceRegistryController", "ASP.NET Core Controller", "HTTP endpoints: Create/Remove/Disable/Enable/Query")
+
+  Component(mediator, "IMediator (MediatR)", "Mediator",  "Диспетчеризация команд/запросов в handlers")
+
+  together {
+    Component(manage, "ManageDeviceRequestHandler", "IRequestHandler<ManageDeviceRequest>", "Сохраняет изменения устройства и публикует DeviceInfoEvent")
+    Component(get, "GetProductsHandler", "IRequestHandler<GetDeviceRequest, List<DeviceInfo>>", "Читает устройства (AsNoTracking) и маппит в DeviceInfo")
+  }
+
+  Component(db, "DeviceRegistryDbContext", "Entity Framework DbContext", "DbSet<DeviceEntity> Devices")
+  Component(pub, "IPublishEndpoint (MassTransit)", "Publisher","Publish(DeviceInfoEvent) в RabbitMQ")
+}
+
+Rel(admin, ctrl, "Вызывает API", "HTTPS")
+Rel(ctrl, auth, "Проверка user-id")
+Rel(auth, user, "Записывает CurrentUser.Id" )
+
+Rel(ctrl, mediator, "Send(ManageDeviceRequest / GetDeviceRequest)" )
+Rel(mediator, manage, "Dispatch" )
+Rel(mediator, get, "Dispatch" )
+
+Rel(manage, db, "Читает/пишет Devices", "EF Core")
+Rel(db, pg, "SQL")
+Rel(manage, pub, "Publish(DeviceInfoEvent)" )
+Rel(pub, rabbit, "AMQP")
+
+Rel(get, db, "Читает Devices (AsNoTracking)", "EF Core")
+
+@enduml

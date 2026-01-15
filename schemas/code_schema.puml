@@ -1,0 +1,69 @@
+@startuml
+title Code — DeviceRegistry: ManageDeviceRequestHandler
+
+class ManageDeviceRequestHandler {
+  +Handle(command: ManageDeviceRequest, cancellationToken: CancellationToken): Task
+  -Save(command: ManageDeviceRequest): Task<Guid?>
+}
+
+class ManageDeviceRequest {
+  +DeviceInfo: DeviceInfo
+}
+
+class DeviceInfo {
+  +DeviceId: string
+  +UserId: string
+  +Type: string
+  +State: DeviceState
+  +Description: string
+}
+
+enum DeviceState {
+  Added
+  Enabled
+  Disabled
+  Removed
+}
+
+class DeviceInfoEvent {
+  +Id: Guid?
+  +Info: DeviceInfo
+}
+
+class DeviceRegistryDbContext {
+  +Devices: DbSet<DeviceEntity>
+  +SaveChangesAsync(): Task<int>
+}
+
+class DeviceEntity {
+  +Id: Guid
+  +DeviceId: string
+  +UserId: string
+  +Type: string
+  +State: DeviceState
+  +Description: string
+}
+
+class DbSet<T>
+
+interface IMapper {
+  +Map<TDestination>(source): TDestination
+  +Map(source, destination): void
+}
+
+interface IPublishEndpoint {
+  +Publish<T>(message: T, cancellationToken: CancellationToken): Task
+}
+
+ManageDeviceRequestHandler --> DeviceRegistryDbContext : db
+ManageDeviceRequestHandler --> IMapper : mapper
+ManageDeviceRequestHandler --> IPublishEndpoint : rabbitEndPoint
+ManageDeviceRequestHandler ..> ManageDeviceRequest
+ManageDeviceRequest --> DeviceInfo
+DeviceInfo --> DeviceState
+DeviceRegistryDbContext --> DbSet : Devices
+DbSet --> DeviceEntity
+
+ManageDeviceRequestHandler ..> DeviceInfoEvent : Publish(new DeviceInfoEvent)
+
+@enduml
