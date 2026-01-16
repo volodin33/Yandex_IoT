@@ -96,7 +96,7 @@ services:
     networks: 
       - smarthome-network
     restart: unless-stopped
-     depends_on:
+    depends_on:
       rabbitmq:
         condition: service_healthy
         
