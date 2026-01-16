@@ -107,7 +107,7 @@ services:
     container_name: device-registry
     environment:
       ASPNETCORE_URLS: http://0.0.0.0:5010
-      ConnectionStrings__Db: "Host=postgres;Port=5432;Database=device_registry;Username=postgres;Password=postgres"
+      ConnectionStrings__Db: "Host=postgres;Port=5432;Database=device_registry-db;Username=postgres;Password=postgres"
       ConnectionStrings__RabbitMq: "amqp://guest:guest@rabbitmq:5672"
       IS_DEMO_MODE: "true"
     ports:
@@ -152,7 +152,7 @@ services:
     container_name: telemetry-service
     environment:
       ASPNETCORE_URLS: http://0.0.0.0:5030
-      ConnectionStrings__Db: "Host=postgres;Port=5432;Database=device_registry;Username=postgres;Password=postgres"
+      ConnectionStrings__Db: "Host=postgres;Port=5432;Database=telemetry-service-db;Username=postgres;Password=postgres"
       ConnectionStrings__RabbitMq: "amqp://guest:guest@rabbitmq:5672"
       IS_DEMO_MODE: "true"
     ports:
@@ -173,7 +173,7 @@ services:
     container_name: flow-service
     environment:
       ASPNETCORE_URLS: http://0.0.0.0:5040
-      ConnectionStrings__Db: "Host=postgres;Port=5432;Database=device_registry;Username=postgres;Password=postgres"
+      ConnectionStrings__Db: "Host=postgres;Port=5432;Database=flow-service-db;Username=postgres;Password=postgres"
       ConnectionStrings__RabbitMq: "amqp://guest:guest@rabbitmq:5672"
       IS_DEMO_MODE: "true"
     ports:
