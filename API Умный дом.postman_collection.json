@@ -1,0 +1,286 @@
+{
+	"info": {
+		"_postman_id": "af36aae2-f23d-449c-893f-b46dc403e67e",
+		"name": "API Умный дом",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5855975"
+	},
+	"item": [
+		{
+			"name": "Управление устройствами",
+			"item": [
+				{
+					"name": "Добавить устройство",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "user-id",
+								"value": "{{user-id}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"deviceId\": \"{{legacyDevice}}\",\n  \"description\": \"датчик температуры\",\n  \"type\": \"temperature\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{deviceRegistryUrl}}/DeviceRegistry",
+							"host": [
+								"{{deviceRegistryUrl}}"
+							],
+							"path": [
+								"DeviceRegistry"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удалить устройство",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "user-id",
+								"value": "{{user-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{deviceRegistryUrl}}/DeviceRegistry/{{deviceId_1}}",
+							"host": [
+								"{{deviceRegistryUrl}}"
+							],
+							"path": [
+								"DeviceRegistry",
+								"{{deviceId_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Включить устройство",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "user-id",
+								"value": "{{user-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{deviceRegistryUrl}}/DeviceRegistry/{{deviceId_1}}/enable",
+							"host": [
+								"{{deviceRegistryUrl}}"
+							],
+							"path": [
+								"DeviceRegistry",
+								"{{deviceId_1}}",
+								"enable"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Выключить устройство",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "user-id",
+								"value": "{{user-id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{deviceRegistryUrl}}/DeviceRegistry/{{deviceId_1}}/disable",
+							"host": [
+								"{{deviceRegistryUrl}}"
+							],
+							"path": [
+								"DeviceRegistry",
+								"{{deviceId_1}}",
+								"disable"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Информация об устройстве",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "user-id",
+								"value": "{{user-id}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"deviceIds\": [\"{{deviceId_1}}\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{deviceRegistryUrl}}/DeviceRegistry/query",
+							"host": [
+								"{{deviceRegistryUrl}}"
+							],
+							"path": [
+								"DeviceRegistry",
+								"query"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Управление сценариями",
+			"item": [
+				{
+					"name": "Создать сценарий",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Kitchen_TemperatureControl\",\r\n  \"triggerDeviceId\": {{deviceId_1}},\r\n  \"flowData\": {\r\n    \"condition\": {\r\n      \"property\": \"Temperature\",\r\n      \"operator\": \"<\",\r\n      \"value\": 23.0\r\n    },\r\n    \"action\": {\r\n      \"targetDeviceId\": {{deviceId_2}},\r\n      \"command\": \"ON\"\r\n    }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{flowApiUrl}}/flow",
+							"host": [
+								"{{flowApiUrl}}"
+							],
+							"path": [
+								"flow"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "API интеграции",
+			"item": [
+				{
+					"name": "Передать данные с устройства",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "user-id",
+								"value": "{{user-id}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"DeviceName\": \"living-room-1\",\r\n  \"Data\": \"29\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5060/Integration/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5060",
+							"path": [
+								"Integration",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "deviceRegistryUrl",
+			"value": "http://localhost:5022"
+		},
+		{
+			"key": "deviceId_1",
+			"value": ""
+		},
+		{
+			"key": "user-id",
+			"value": ""
+		},
+		{
+			"key": "flowApiUrl",
+			"value": ""
+		},
+		{
+			"key": "integrationUrl",
+			"value": ""
+		},
+		{
+			"key": "deviceId_2",
+			"value": ""
+		},
+		{
+			"key": "legacyDevice",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
