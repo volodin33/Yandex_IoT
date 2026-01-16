@@ -34,8 +34,8 @@ Rel(ctrl, auth, "Проверка user-id")
 Rel(auth, user, "Записывает CurrentUser.Id" )
 
 Rel(ctrl, mediator, "Send(ManageDeviceRequest / GetDeviceRequest)" )
-Rel(mediator, manage, "Dispatch" )
-Rel(mediator, get, "Dispatch" )
+Rel(mediator, manage, "")
+Rel(mediator, get, "")
 
 Rel(manage, db, "Читает/пишет Devices", "EF Core")
 Rel(db, pg, "SQL")

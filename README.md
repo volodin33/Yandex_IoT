@@ -17,7 +17,7 @@
 
 ### **3. Определение доменов и границы контекстов**
 Домен: Отопление дома<br>
-Поддомены: Управление оборудованием, Мониторинг
+Поддомены: Управление оборудованием, Мониторинг, Регистрация датчиков
 
 ### **4. Проблемы монолитного решения**
 
@@ -29,7 +29,7 @@
 
 ### 5. Визуализация контекста системы — диаграмма С4
 
-[Диаграмма Puml](./schemas/oldschema.puml)
+- Диаграмма ([svg](./schemas/svg/oldschema.svg), [puml](./schemas/oldschema.puml))
 
 # Задание 2. Проектирование микросервисной архитектуры
 
@@ -37,22 +37,22 @@
 
 **Диаграмма контейнеров (Containers)**
 
-- [Диаграмма](./schemas/container_schema.puml)
+- Диаграмма ([svg](./schemas/svg/container_schema.svg), [puml](./schemas/container_schema.puml))
 
 **Диаграмма компонентов (Components)**
 
-- [Диаграмма компонентов микросервиса Devcie Registry](./schemas/dr_schema.puml)
-- [Диаграмма компонентов микросервиса Router](./schemas/router_schema.puml)
-- [Диаграмма компонентов микросервиса Flow](./schemas/flow_schema.puml)
-- [Диаграмма компонентов микросервиса Telemetry](./schemas/telemetry_schema.puml)
+- Диаграмма компонентов микросервиса Devcie Registry ([svg](./schemas/svg/dr_schema.svg), [puml](./schemas/dr_schema.puml))
+- Диаграмма компонентов микросервиса Router ([svg](./schemas/svg/router_schema.svg), [puml](./schemas/router_schema.puml))
+- Диаграмма компонентов микросервиса Flow ([svg](./schemas/svg/flow_schema.svg), [puml](./schemas/flow_schema.puml))
+- Диаграмма компонентов микросервиса Telemetry ([svg](./schemas/svg/telemetry_schema.svg), [puml](./schemas/telemetry_schema.puml))
 
 **Диаграмма кода (Code)**
 
-- [Диаграмма кода компонента ManageDeviceRequestHandler сервиса Devcie Registry](./schemas/code_schema.puml)
+- Диаграмма кода компонента ManageDeviceRequestHandler сервиса Devcie Registry ([svg](./schemas/svg/code_schema.svg), [puml](./schemas/code_schema.puml))
 
 # Задание 3. Разработка ER-диаграммы
 
-- [Сущности системы](./schemas/er_schema.puml)
+- Сущности системы ([svg](./schemas/svg/er_schema.svg), [puml](./schemas/er_schema.puml))
 
 # Задание 4. Создание и документирование API
 
@@ -68,7 +68,6 @@
 
 
 # Задание 5. Работа с docker и docker-compose
-- 
 - [docker-compose.yml ](./apps/docker-compose.yml )
 
 Перейдите в apps.
