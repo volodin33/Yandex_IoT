@@ -1,0 +1,32 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_LEFT_RIGHT()
+title C4 — Components: FlowService
+
+Person(admin, "Администратор", "Создаёт сценарии")
+
+ContainerQueue(rabbit, "RabbitMQ", "AMQP",  "DeviceEvent / CommandToDeviceEvent")
+ContainerDb(pg, "PostgreSQL", "DB",  "Flows")
+
+Container_Boundary(flow, "FlowService (ASP.NET Core)") {
+
+  Component(ctrl, "FlowController", "ASP.NET Core Controller", "HTTP API для создания сценариев")
+  Component(handler, "CreateFlowReuestHandler", "Handler", "Создаёт сценарий и сохраняет в БД")
+  Component(consumer, "DeviceEventConsumer", "MassTransit Consumer", "Получает DeviceEvent из RabbitMQ")
+  Component(engine, "FlowEngine", "Domain service", "Обрабатывает события и решает, нужно ли выполнять команду")
+  Component(db, "FlowDbContext", "EF Core DbContext", "DbSet<FlowEntity>")
+  Component(pub, "IPublishEndpoint", "MassTransit Publisher", "Публикует CommandToDeviceEvent")
+}
+
+Rel(admin, ctrl, "Создаёт сценарий", "HTTPS")
+Rel(ctrl, handler, "CreateFlowReuest")
+Rel(handler, db, "Сохраняет сценарий", "EF Core")
+Rel(db, pg, "SQL")
+Rel(rabbit, consumer, "DeviceEvent", "AMQP")
+Rel(consumer, engine, "Передаёт событие")
+Rel(engine, pub, "DeviceCommandEvent")
+Rel(engine, db, "Запрашмивает сценарий")
+Rel(pub, rabbit, "AMQP")
+
+@enduml

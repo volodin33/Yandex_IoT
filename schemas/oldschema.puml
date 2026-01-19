@@ -1,0 +1,33 @@
+@startuml Yandex_IoT
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Умный дом. Монолит. Только отпление
+
+Person(user, "Пользователь", "Смотрит температуру, Устаавливает температуру")
+
+System_Boundary(smartHome, "Система «Управление отоплением") {
+
+  Container(app, "Монолитное приложение", "Go", "HTTP API. Всё реализовано в одном контроллере.")
+  ContainerDb(db, "База данных", "PostgreSQL", "Дома, датчики, измерения, настройки отопления")
+
+  Component(controller, "Sensors Controller", "HTTP Controller", "Единая точка входа. Напрямую читает/пишет в БД и общается с устройствами")
+
+  Boundary(Logical, "Поддомен (логически, в коде все в куче)") {
+    Component(mon, "Поддомен: Мониторинг", "Логический", "Получение температуры и состояния")
+    Component(ctrl, "Поддомен: Управление оборудованием", "Логический",  "Команды управления отоплением")
+    Component(reg, "Поддомен: Регистрация датчиков", "Логический",  "Привязка датчиков к дому, удаление датчиков")
+  }
+}
+
+System_Ext(heating, "Датчики отопления")
+
+Rel(user, app, "вызывает API", "HTTP")
+Rel(controller, heating, "запрашивает / управляет", "синхронно")
+Rel(app, controller, "содержит")
+Rel(controller, db, "читает / пишет", "SQL")
+Rel(controller, mon, "реализует")
+Rel(controller, ctrl, "реализует")
+Rel(controller, reg, "реализует")
+
+@enduml
