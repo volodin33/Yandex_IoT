@@ -1,6 +1,0 @@
-@FlowService_HostAddress = http://localhost:5034
-
-GET {{FlowService_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
