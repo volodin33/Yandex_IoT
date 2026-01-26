@@ -6,6 +6,6 @@ namespace Router;
 public interface IDeviceRegistryApi
 {
     [Headers("user-id: router-service")]
-    [Post("/DeviceRegistry/query")]
+    [Post("/devices/search")]
     Task<IEnumerable<DeviceInfo>> GetDevices(GetDeviceRequest request);
 }

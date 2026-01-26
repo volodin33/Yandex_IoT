@@ -7,7 +7,7 @@ namespace LegacyIntegrationApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class IntegrationController(IMediator mediator) : ControllerBase
+public class IntegrationsController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Send([FromBody]LegacyDeviceApiRequest request)

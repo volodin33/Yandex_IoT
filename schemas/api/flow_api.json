@@ -10,10 +10,10 @@
     }
   ],
   "paths": {
-    "/Flow": {
+    "/Flows": {
       "post": {
         "tags": [
-          "Flow"
+          "Flows"
         ],
         "requestBody": {
           "content": {
@@ -104,7 +104,7 @@
   },
   "tags": [
     {
-      "name": "Flow"
+      "name": "Flows"
     }
   ]
 }

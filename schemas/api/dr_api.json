@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "DeviceRegistry | v1",
+    "title": "Devices Registry | v1",
     "version": "1.0.0"
   },
   "servers": [
@@ -10,10 +10,10 @@
     }
   ],
   "paths": {
-    "/DeviceRegistry": {
+    "/Devices": {
       "post": {
         "tags": [
-          "DeviceRegistry"
+          "Devices"
         ],
         "requestBody": {
           "content": {
@@ -42,10 +42,10 @@
         }
       }
     },
-    "/DeviceRegistry/{id}": {
+    "/Devices/{id}": {
       "delete": {
         "tags": [
-          "DeviceRegistry"
+          "Devices"
         ],
         "parameters": [
           {
@@ -62,12 +62,10 @@
             "description": "OK"
           }
         }
-      }
-    },
-    "/DeviceRegistry/{id}/disable": {
-      "post": {
+      },
+      "patch": {
         "tags": [
-          "DeviceRegistry"
+          "Devices"
         ],
         "parameters": [
           {
@@ -79,28 +77,26 @@
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/DeviceRegistry/{id}/enable": {
-      "post": {
-        "tags": [
-          "DeviceRegistry"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDeviceStateApiRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDeviceStateApiRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDeviceStateApiRequest"
+              }
             }
-          }
-        ],
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -108,10 +104,10 @@
         }
       }
     },
-    "/DeviceRegistry/query": {
+    "/Devices/search": {
       "post": {
         "tags": [
-          "DeviceRegistry"
+          "Devices"
         ],
         "requestBody": {
           "content": {
@@ -223,12 +219,20 @@
             "nullable": true
           }
         }
+      },
+      "UpdateDeviceStateApiRequest": {
+        "type": "object",
+        "properties": {
+          "isEnabled": {
+            "type": "boolean"
+          }
+        }
       }
     }
   },
   "tags": [
     {
-      "name": "DeviceRegistry"
+      "name": "Devices"
     }
   ]
 }

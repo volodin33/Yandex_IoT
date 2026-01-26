@@ -11,7 +11,7 @@ namespace device_registry.Controllers;
 [ApiController]
 [Route("[controller]")]
 [ServiceFilter(typeof(AuthorizeFilter))]
-public class DeviceRegistryController(CurrentUser currentUser, IMediator mediator) : ControllerBase
+public class DevicesController(CurrentUser currentUser, IMediator mediator) : ControllerBase
 {
     /// <summary>
     /// Добавляет новое устройство.
@@ -53,10 +53,10 @@ public class DeviceRegistryController(CurrentUser currentUser, IMediator mediato
     }
     
     /// <summary>
-    /// Отключает устройство.
+    /// Включает/отключает устройство.
     /// </summary>
-    [HttpPost("{id}/disable")]
-    public async Task<IActionResult> Disable(string id)
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> Disable(string id, [FromBody] UpdateDeviceStateApiRequest request)
     {
         await mediator.Send(new ManageDeviceRequest
         (
@@ -64,25 +64,7 @@ public class DeviceRegistryController(CurrentUser currentUser, IMediator mediato
             {
                 UserId = currentUser.Id, 
                 DeviceId = id, 
-                State = DeviceState.Disabled 
-            }
-        ));
-        return NoContent();
-    }
-    
-    /// <summary>
-    /// Включает устройство.
-    /// </summary>
-    [HttpPost("{id}/enable")]
-    public async Task<IActionResult> Enable(string id)
-    {
-        await mediator.Send(new ManageDeviceRequest
-        (
-            new DeviceInfo
-            {
-                UserId = currentUser.Id,
-                DeviceId = id, 
-                State = DeviceState.Enabled
+                State = request.IsEnabled ? DeviceState.Enabled : DeviceState.Disabled 
             }
         ));
         return NoContent();
@@ -91,7 +73,7 @@ public class DeviceRegistryController(CurrentUser currentUser, IMediator mediato
     /// <summary>
     /// Возращает список устройств.
     /// </summary>
-    [HttpPost("query")]
+    [HttpPost("search")]
     public async Task<ActionResult<IEnumerable<DeviceInfo>>> GetDevices(smarthome_core.GetDeviceRequest request)
     {
         var list = await mediator.Send(new GetDeviceRequest(request.DeviceIds));

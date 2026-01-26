@@ -7,7 +7,7 @@ namespace FlowService.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class FlowController(IMediator mediator) : ControllerBase
+public class FlowsController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateFlowApiRequest apiRequest)
