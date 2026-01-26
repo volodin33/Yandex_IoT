@@ -1,0 +1,40 @@
+@startuml
+title ER — PostgreSQL
+
+hide circle
+skinparam linetype ortho
+
+entity "Devices" as Devices {
+  * Id : uuid <<PK>>
+  --
+  DeviceId : text
+  UserId : text
+  Type : text
+  State : integer
+  Description : text
+}
+
+entity "Flows" as Flows {
+  * Id : uuid <<PK>>
+  --
+  Name : text
+  TriggerDeviceId : text
+  FlowJson : jsonb
+  IsEnabled : boolean
+}
+
+entity "DeviceTelemetry" as DeviceTelemetry {
+  * Id : bigint <<PK>>
+  --
+  DeviceId : text
+  Data : text
+  ReceivedAt : timestamptz <<NULLABLE>>
+}
+
+' ВАЖНО: в миграциях нет FK, поэтому строгих связей нет.
+' Если хочешь показать "логические" связи (без FK) — раскомментируй:
+
+Devices }o..o{ DeviceTelemetry : "DeviceId (логически, без FK)"
+Devices }o..o{ Flows : "DeviceId/TriggerDeviceId (логически, без FK)"
+
+@enduml
